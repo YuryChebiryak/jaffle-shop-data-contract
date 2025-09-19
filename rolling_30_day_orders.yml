@@ -1,0 +1,54 @@
+dataContractSpecification: 1.2.0
+id: rolling-30-day-orders
+info:
+  title: Rolling 30 Day Orders
+  version: 1.0.0
+  description: Orders aggregated over a rolling 30-day window.
+  owner: Analytics Team
+  status: active
+  contact:
+    name: Yury
+    url: https://teams.example.com/analytics
+
+servers:
+  local-trino:
+    type: trino
+    environment: dev
+    location: trino://localhost:8081/jaffle_shop/analytics
+    format: table
+    description: Local Trino cluster
+
+models:
+  rolling_30_day_orders:
+    description: Aggregated orders over the last 30 days with customer details.
+    type: table
+    fields:
+      order_id:
+        type: text
+        description: Unique identifier for the order
+        required: true
+        unique: true
+        primaryKey: true
+      customer_id:
+        type: text
+        description: Customer unique identifier
+        required: true
+      order_date:
+        type: date
+        description: Date when the order was placed
+        required: true
+      order_amount:
+        type: double
+        description: Total order amount in CHF
+        required: true
+        quality:
+          - type: sql
+            description: Orders must have positive amounts
+            query: |
+              SELECT COUNT(*) FROM rolling_30_day_orders WHERE order_amount <= 0
+            mustBeEqualTo: 0
+      status:
+        type: text
+        description: Current status of the order
+        required: true
+        examples: ["placed", "shipped", "completed", "returned"]
