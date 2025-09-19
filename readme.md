@@ -15,12 +15,13 @@ This repository demonstrates how to check that your data delivery conforms to a 
    source venv/bin/activate   # On Windows use `venv\Scripts\activate`
    ```
 
-2. **Install the data contracts CLI
+
+2. **Install the data contracts CLI**
     ```bash
     pip install -r requirements.txt
     ```
 
-3. **Run the command
+3. **Run the command**
     ```bash
-    datacontract test rolling_30_day_orders.yml
+    datacontract test rolling_30_day_orders_postgres.yml
     ```

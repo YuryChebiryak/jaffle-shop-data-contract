@@ -14,41 +14,65 @@ servers:
   local-trino:
     type: trino
     environment: dev
-    location: trino://localhost:8081/jaffle_shop/analytics
+    host: localhost
+    port: 8081
+    catalog: dbt
+    schema: dbt_ddi
     format: table
     description: Local Trino cluster
 
+
 models:
   rolling_30_day_orders:
-    description: Aggregated orders over the last 30 days with customer details.
+    description: Aggregated orders over 30 days
     type: table
     fields:
-      order_id:
-        type: text
-        description: Unique identifier for the order
-        required: true
-        unique: true
-        primaryKey: true
-      customer_id:
-        type: text
-        description: Customer unique identifier
-        required: true
       order_date:
         type: date
-        description: Date when the order was placed
+        description: The date of the orders (truncated to date level)
         required: true
-      order_amount:
-        type: double
-        description: Total order amount in CHF
+      total_amount:
+        type: numeric
+        description: Total payment amount for all completed orders on this date
         required: true
         quality:
           - type: sql
-            description: Orders must have positive amounts
-            query: |
-              SELECT COUNT(*) FROM rolling_30_day_orders WHERE order_amount <= 0
+            description: Total amount must be between 0 and 1,000,000
+            query: SELECT COUNT(*) FROM rolling_30_day_orders WHERE total_amount < 0 OR total_amount > 1000000
             mustBeEqualTo: 0
-      status:
-        type: text
-        description: Current status of the order
+      order_count:
+        type: numeric
+        description: Number of completed orders on this date
         required: true
-        examples: ["placed", "shipped", "completed", "returned"]
+        quality:
+          - type: sql
+            description: Order count must be between 0 and 10,000
+            query: SELECT COUNT(*) FROM rolling_30_day_orders WHERE order_count < 0 OR order_count > 10000
+            mustBeEqualTo: 0
+      rolling_30_day_amount:
+        type: numeric
+        description: Sum of total_amount over the current date and previous 29 days
+        required: true
+        quality:
+          - type: sql
+            description: 30-day total amount must be between 0 and 30,000,000
+            query: SELECT COUNT(*) FROM rolling_30_day_orders WHERE rolling_30_day_amount < 0 OR rolling_30_day_amount > 30000000
+            mustBeEqualTo: 0
+      rolling_30_day_orders:
+        type: numeric
+        description: Sum of order_count over the current date and previous 29 days
+        required: true
+        quality:
+          - type: sql
+            description: 30-day order count must be between 0 and 300,000
+            query: SELECT COUNT(*) FROM rolling_30_day_orders WHERE rolling_30_day_orders < 0 OR rolling_30_day_orders > 300000
+            mustBeEqualTo: 0
+      rolling_30_day_avg_daily:
+        type: numeric
+        description: Average daily total_amount over the current date and previous 29 days
+        required: true
+        quality:
+          - type: sql
+            description: Average daily amount must be between 0 and 1,000,000
+            query: SELECT COUNT(*) FROM rolling_30_day_orders WHERE rolling_30_day_avg_daily < 0 OR rolling_30_day_avg_daily > 1000000
+            mustBeEqualTo: 0
