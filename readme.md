@@ -7,7 +7,7 @@ More details you can find in the LinkedIn post: [Testing Data Contracts with dat
 ## Prerequisites
 
 - Python 3.9+ installed
-- Access to your data warehouse (e.g., Trino cluster)
+- Access to your data postgres 
 
 ## Setup
 
