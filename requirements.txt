@@ -1,1 +1,1 @@
-datacontract-cli[all]
+datacontract-cli[postgres]
