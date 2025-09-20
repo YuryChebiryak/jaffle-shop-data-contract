@@ -2,6 +2,8 @@
 
 This repository demonstrates how to check that your data delivery conforms to a data contract using the [datacontract.com](https://datacontract.com) CLI.
 
+More details you can find in the LinkedIn post: [Testing Data Contracts with datacontract.com](https://www.linkedin.com/feed/update/urn:li:activity:7375296445676945408/)
+
 ## Prerequisites
 
 - Python 3.9+ installed
