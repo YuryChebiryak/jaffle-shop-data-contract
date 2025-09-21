@@ -7,7 +7,7 @@ More details you can find in the LinkedIn post: [Testing Data Contracts with dat
 ## Prerequisites
 
 - Python 3.9+ installed
-- Access to your data postgres 
+- Access to your data in a Postgres database 
 
 ## Setup
 
